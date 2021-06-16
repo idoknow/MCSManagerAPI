@@ -87,14 +87,18 @@ public class MinecraftServer extends Thread implements IServerInfo {
 
     @Override
     public Player[] getPlayerList() {
-        int len=response.players.sample.length;
-        Player[] players=new Player[len];
-        for (int i=0;i<len;i++){
-            players[i]=new Player();
-            players[i].name=response.players.sample[i].name;
-            players[i].id=response.players.sample[i].id;
+        if (response.players.sample!=null) {
+            int len = response.players.sample.length;
+            Player[] players = new Player[len];
+            for (int i = 0; i < len; i++) {
+                players[i] = new Player();
+                players[i].name = response.players.sample[i].name;
+                players[i].id = response.players.sample[i].id;
+            }
+            return players;
+        }else {
+            return new Player[0];
         }
-        return players;
     }
 
     @Override
@@ -107,13 +111,17 @@ public class MinecraftServer extends Thread implements IServerInfo {
     }
     @Override
     public ExtraDescr[] getExtraDescription(){
-        ExtraDescr[] extraDescrs=new ExtraDescr[response.description.extra.length];
-        for (int i=0;i<response.description.extra.length;i++){
-            extraDescrs[i]=new ExtraDescr();
-            extraDescrs[i].color=response.description.extra[i].color;
-            extraDescrs[i].text=response.description.extra[i].text;
+        if (response.description.extra!=null) {
+            ExtraDescr[] extraDescrs = new ExtraDescr[response.description.extra.length];
+            for (int i = 0; i < response.description.extra.length; i++) {
+                extraDescrs[i] = new ExtraDescr();
+                extraDescrs[i].color = response.description.extra[i].color;
+                extraDescrs[i].text = response.description.extra[i].text;
+            }
+            return extraDescrs;
+        }else {
+            return new ExtraDescr[0];
         }
-        return extraDescrs;
     }
     @Override
     public String getFavicon() {
