@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="BasicInfoAPI:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/BasicInfoAPI_jar</output-path>
+    <root id="archive" name="BasicInfoAPI.jar">
+      <element id="module-output" name="BasicInfoAPI" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/BasicInfoAPI/libs/gson-2.8.7.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
