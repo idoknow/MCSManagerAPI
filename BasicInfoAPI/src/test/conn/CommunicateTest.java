@@ -8,7 +8,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 public class CommunicateTest {
-    static String host="192.168.1.3";
+    static String host="49.234.30.88";
     static int port=25565;
     static DataOutputStream dataOutputStream;
     static DataInputStream dataInputStream;
@@ -18,16 +18,22 @@ public class CommunicateTest {
         dataOutputStream=new DataOutputStream(socket.getOutputStream());
         dataInputStream=new DataInputStream(socket.getInputStream());
         System.out.println("streamObjectCreated.");
-        writeVarInt(18);
+        writeVarInt(19);
         writeVarInt(0x00);
         writeVarInt(754);
-        writeString("192.168.1.3");
+        writeString("49.234.30.88");
         writeVarInt(25567);
         writeVarInt(1);
 //        dataOutputStream.write(1);
 //        dataOutputStream.flush();
         System.out.println("wroteHandshake.");
         writeVarInt(0);
+//        System.out.println("recv:"+readVarInt());
+//        System.out.println(dataInputStream.readByte());
+//        System.out.println(dataInputStream.readByte());
+//        System.out.println(dataInputStream.readByte());
+//        System.out.println(dataInputStream.readByte());
+//        System.out.println(readVarInt());
         System.out.println("recv:"+readString());
     }
     public static void writeVarInt(int value)throws Exception {
@@ -54,6 +60,10 @@ public class CommunicateTest {
         int len=readVarInt();
         byte[] b=new byte[len];
         dataInputStream.read(b,0,len);
+        return new String(b);
+    }
+    public static String readSingleString()throws Exception{
+        byte[] b=new byte[1024];
         return new String(b);
     }
     public static int readVarInt()throws Exception {

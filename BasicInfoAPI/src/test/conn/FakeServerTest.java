@@ -8,7 +8,7 @@ import java.nio.charset.StandardCharsets;
 public class FakeServerTest {
     static DataInputStream dataInputStream;
     public static void main(String[] args)throws Exception {
-        ServerSocket socket=new ServerSocket(25567);
+        ServerSocket socket=new ServerSocket(25565);
         while (true){
             Socket client=socket.accept();
             System.out.println("newConn.");

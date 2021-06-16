@@ -6,15 +6,20 @@ package main.api;
  */
 public interface IServerInfo {
     class Player{
-        String name;
-        String id;
+        public String name;
+        public String id;
+    }
+    class ExtraDescr{
+        public String text;
+        public String color;
     }
     String getVersionName();
     int getVersionProtocol();
     int getMaxPlayer();
     int getOnlinePlayer();
     Player[] getPlayerList();
-    String getServerDescription();
+    String getDefaultDescriptionText();
+    String getDefaultDescriptionColor();
+    ExtraDescr[] getExtraDescription();
     String getFavicon();
-    String getJSONRawData();
 }
