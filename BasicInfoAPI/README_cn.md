@@ -48,3 +48,4 @@ for (IServerInfo.Player p:players){
  */
 System.out.println("favicon:"+minecraftServer.getFavicon());
 ```
+注意:由于协议的设计原因，当从一个版本介于beta1.8和1.3之间的服务器获取信息时，"version name"会被设为"<1.4"，同时"version protocol"会被设为-1。

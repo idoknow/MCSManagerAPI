@@ -46,3 +46,6 @@ for (IServerInfo.Player p:players){
  */
 System.out.println("favicon:"+minecraftServer.getFavicon());
 ```
+Caution:Due to the design of the protocol,when getting info from a server whose version is between beta1.8 and 1.3,  
+the "version name" will be set to "<1.4" while the "version protocol" will be set to -1.
+.
