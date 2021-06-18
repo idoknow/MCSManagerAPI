@@ -58,7 +58,7 @@ public class MinecraftServer extends Thread implements IServerInfo {
                 dataInputStream.readByte();
                 byte[] b=new byte[512];
                 dataInputStream.read(b);
-                ByteBase bbase=new ByteBase(b);
+                ByteBase bbase= new ByteBase(b);
                 byte[] end=new byte[]{0,0};
                 if (new String(bbase.pop(end),StandardCharsets.UTF_16BE).equals("§1")){
                     response=new Response();
@@ -76,13 +76,45 @@ public class MinecraftServer extends Thread implements IServerInfo {
                     available=true;
                 }
             }
+            if (!available){//version lower then 1.4
+
+                socket=new Socket(host,port);
+                dataInputStream=new DataInputStream(socket.getInputStream());
+                dataOutputStream=new DataOutputStream(socket.getOutputStream());
+
+                dataOutputStream.write(0xFE);
+                dataOutputStream.flush();
+
+                if (dataInputStream.readByte()==-1){
+                    dataInputStream.readByte();
+                    dataInputStream.readByte();
+                    byte[] b=new byte[512];
+                    dataInputStream.read(b);
+                    ByteBase bbase= new ByteBase(b);
+                    byte[] end=new byte[]{0, (byte) 0xa7};
+                    byte[] zeroEnd=new byte[]{0, 0};
+
+                    response=new Response();
+                    response.version=new Response.version();
+                    response.version.name="<1.4";
+                    response.version.protocol=-1;
+
+                    response.description=new Response.description();
+                    response.description.text=new String(bbase.pop(end),StandardCharsets.UTF_16BE);
+
+                    response.players=new Response.players();
+                    response.players.online=Integer.parseInt(new String(bbase.pop(end),StandardCharsets.UTF_16BE));
+                    response.players.max=Integer.parseInt(new String(bbase.pop(zeroEnd),StandardCharsets.UTF_16BE));
+                    available=true;
+                }
+            }
         }
     }
     private short len(String l){
         String utf16be=new String(l.getBytes(StandardCharsets.UTF_8),StandardCharsets.UTF_16BE);
         return (short)utf16be.length();
     }
-    private class ByteBase{
+    private static class ByteBase{
         byte[] arr;
         int index=0;
         ByteBase(byte[] byteArr){
@@ -97,6 +129,8 @@ public class MinecraftServer extends Thread implements IServerInfo {
             ArrayList<Byte> byteArrayList=new ArrayList<>();
             byte[] b=new byte[2];
             while(true){
+                if (index>=arr.length-1)
+                    break;
                 b=pop(2);
                 if (b[0]==end[0]&&b[1]==end[1]){
                     break;
