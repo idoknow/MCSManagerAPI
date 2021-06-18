@@ -13,6 +13,7 @@ public interface IServerInfo {
         public String text;
         public String color;
     }
+    boolean isAvailable();
     String getVersionName();
     int getVersionProtocol();
     int getMaxPlayer();

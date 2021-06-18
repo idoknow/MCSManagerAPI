@@ -24,6 +24,7 @@ public class MinecraftServer extends Thread implements IServerInfo {
     private String host;
     private int port=25565;
     private Response response=null;
+    private boolean available=false;
     public MinecraftServer(String host,int port)throws Exception {
         socket=new Socket(host,port);
         this.host=host;
@@ -38,6 +39,11 @@ public class MinecraftServer extends Thread implements IServerInfo {
         new PacketSend(0).write(dataOutputStream);
         try {
             response = new Gson().fromJson(new PacketRecv(dataInputStream).popString(), Response.class);
+            if (response==null){
+                available=false;
+                throw new EOFException("Invalid server response.");
+            }
+            available=true;
         }catch (EOFException e){//To change protocol.
             socket=new Socket(host,port);
             dataInputStream=new DataInputStream(socket.getInputStream());
@@ -67,6 +73,7 @@ public class MinecraftServer extends Thread implements IServerInfo {
                             (new String(bbase.pop(end),StandardCharsets.UTF_16BE));
                     response.players.max=Integer.parseInt
                             (new String(bbase.pop(end),StandardCharsets.UTF_16BE));
+                    available=true;
                 }
             }
         }
@@ -80,6 +87,11 @@ public class MinecraftServer extends Thread implements IServerInfo {
         int index=0;
         ByteBase(byte[] byteArr){
             this.arr=byteArr;
+//            System.out.print("list:");
+//            for (byte b:byteArr){
+//                System.out.print(b+" ");
+//            }
+//            System.out.println();
         }
         public byte[] pop(byte[] end){
             ArrayList<Byte> byteArrayList=new ArrayList<>();
@@ -136,6 +148,10 @@ public class MinecraftServer extends Thread implements IServerInfo {
         String favicon;
     }
 
+    @Override
+    public boolean isAvailable(){
+        return available;
+    }
 
     @Override
     public String getVersionName() {
