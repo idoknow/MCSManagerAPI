@@ -6,7 +6,7 @@ This repo contains several modules.Provides APIs for bot making or related proje
 
 Supports to get basic info of a Minecraft server.  
 Using the official client's way to get info that can be listed in Minecraft client's server list.  
-Click the dir link to get further info.  
+Click the dir link to get further info of this API.  
 Supported server version:
 1.17.x
 1.16.x
@@ -22,5 +22,3 @@ Supported server version:
 1.6.x
 1.4.x
 1.5.x
-
-Latest Release:0.2
