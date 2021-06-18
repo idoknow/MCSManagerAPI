@@ -39,7 +39,6 @@ public class MinecraftServer extends Thread implements IServerInfo {
         try {
             response = new Gson().fromJson(new PacketRecv(dataInputStream).popString(), Response.class);
         }catch (EOFException e){//To change protocol.
-            System.out.println("ChangeProtocol");
             socket=new Socket(host,port);
             dataInputStream=new DataInputStream(socket.getInputStream());
             dataOutputStream=new DataOutputStream(socket.getOutputStream());
@@ -56,7 +55,6 @@ public class MinecraftServer extends Thread implements IServerInfo {
                 ByteBase bbase=new ByteBase(b);
                 byte[] end=new byte[]{0,0};
                 if (new String(bbase.pop(end),StandardCharsets.UTF_16BE).equals("§1")){
-                    System.out.println("packingResponse.");
                     response=new Response();
                     response.version=new Response.version();
                     response.version.protocol=Integer.parseInt
@@ -77,24 +75,11 @@ public class MinecraftServer extends Thread implements IServerInfo {
         String utf16be=new String(l.getBytes(StandardCharsets.UTF_8),StandardCharsets.UTF_16BE);
         return (short)utf16be.length();
     }
-    private void listByte(byte[] bytes){
-        System.out.print("list:");
-        for(byte b:bytes){
-            System.out.print(b+" ");
-        }
-        System.out.println();
-    }
     private class ByteBase{
         byte[] arr;
         int index=0;
         ByteBase(byte[] byteArr){
             this.arr=byteArr;
-            for (byte b:byteArr){
-                System.out.print(b+" ");
-            }
-            System.out.println();
-            String s=new String(arr,StandardCharsets.UTF_16BE);
-            System.out.println(s);
         }
         public byte[] pop(byte[] end){
             ArrayList<Byte> byteArrayList=new ArrayList<>();
@@ -112,7 +97,6 @@ public class MinecraftServer extends Thread implements IServerInfo {
             for (int i=0;i<len;i++){
                 result[i]=byteArrayList.get(i);
             }
-            listByte(result);
             return result;
         }
         public byte pop(){
