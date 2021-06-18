@@ -8,7 +8,7 @@ import java.nio.charset.StandardCharsets;
 public class FakeServerTest {
     static DataInputStream dataInputStream;
     public static void main(String[] args)throws Exception {
-        ServerSocket socket=new ServerSocket(25565);
+        ServerSocket socket=new ServerSocket(25567);
         while (true){
             Socket client=socket.accept();
             System.out.println("newConn.");
@@ -16,19 +16,20 @@ public class FakeServerTest {
                 dataInputStream=new DataInputStream(client.getInputStream());
                 int len=0;
                 byte[] recv=new byte[2048];
-                System.out.println("Length(varInt):"+readVarInt());
-                System.out.println("PacketID(varInt):"+readVarInt());
-                System.out.println("ProtocolVersion(varInt):"+readVarInt());
-                System.out.println("ServerAddress(String):"+readString());
-                System.out.println("ServerPort(UnsignedShort):"+readUnsignedShort());
-                System.out.println("NextState(varIntEnum):"+readVarInt());
+//                System.out.println("Length(varInt):"+readVarInt());
+//                System.out.println("PacketID(varInt):"+readVarInt());
+//                System.out.println("ProtocolVersion(varInt):"+readVarInt());
+//                System.out.println("ServerAddress(String):"+readString());
+//                System.out.println("ServerPort(UnsignedShort):"+readUnsignedShort());
+//                System.out.println("NextState(varIntEnum):"+readVarInt());
                 while((len=dataInputStream.read(recv))!=-1){
                     if (len==0)
                         continue;
 //                    System.out.println("recv:"+new String(recv, StandardCharsets.UTF_8));
-                    for (int i=0;i<1024;i++){
+                    for (int i=0;i<len;i++){
                         System.out.print(recv[i]+" ");
                     }
+                    System.out.println();
                     recv=new byte[1024];
                 }
             }catch (Exception e){

@@ -5,7 +5,7 @@ import main.conn.MinecraftServer;
 
 public class MinecraftServerTest {
     public static void main(String[] args)throws Exception {
-        MinecraftServer minecraftServer=new MinecraftServer("cn-cd-dx-1.natfrp.cloud",18904);
+        MinecraftServer minecraftServer=new MinecraftServer("localhost",25565);
         System.out.println("version:name:"+minecraftServer.getVersionName()+" protocol:"+minecraftServer.getVersionProtocol());
         System.out.println("defaultDescription:color:"+minecraftServer.getDefaultDescriptionColor()+" text:"+minecraftServer.getDefaultDescriptionText());
         IServerInfo.ExtraDescr[] extraDescrs=minecraftServer.getExtraDescription();
