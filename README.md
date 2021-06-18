@@ -27,4 +27,4 @@ release:
 1.2.x
 1.1
 1.0
-and all snapshots of above version.
+and all snapshots of above versions.
