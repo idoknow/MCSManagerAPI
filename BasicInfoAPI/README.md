@@ -3,7 +3,7 @@
 
 ## Version
 
-Latest Release:0.1,check release page.
+Please check release page.
 
 ## Abstract
 
