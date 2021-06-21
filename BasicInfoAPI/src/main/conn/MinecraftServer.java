@@ -3,10 +3,11 @@ package main.conn;
 
 import com.google.gson.Gson;
 import main.api.IServerInfo;
+import sun.misc.BASE64Decoder;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.EOFException;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -270,12 +271,27 @@ public class MinecraftServer extends Thread implements IServerInfo {
         }
     }
     @Override
-    public String getFavicon() {
+    public String getFaviconBase64() {
         if (response!=null) {
             return response.favicon;
         }else {
             return null;
         }
+    }
+    @Override
+    public BufferedImage getFaviconImage(){
+        try{
+            return base64ToBufferedImage(getFaviconBase64().split(",")[1]);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+    private  static BufferedImage base64ToBufferedImage(String base64)throws IOException {
+        BASE64Decoder decoder = new sun.misc.BASE64Decoder();
+        byte[] bytes1 = decoder.decodeBuffer(base64);
+        ByteArrayInputStream bais = new ByteArrayInputStream(bytes1);
+        return ImageIO.read(bais);
     }
 
 }

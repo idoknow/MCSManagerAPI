@@ -3,6 +3,10 @@ package test.conn;
 import main.api.IServerInfo;
 import main.conn.MinecraftServer;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+
 public class MinecraftServerTest {
     public static void main(String[] args)throws Exception {
         MinecraftServer minecraftServer=new MinecraftServer("play.ee-fans.com",25565);
@@ -18,6 +22,22 @@ public class MinecraftServerTest {
         for (IServerInfo.Player p:players){
             System.out.println("player:name:"+p.name+" id:"+p.id);
         }
-        System.out.println("favicon:"+minecraftServer.getFavicon());
+        System.out.println("favicon:"+minecraftServer.getFaviconBase64());
+
+        FaviconDisplay display=new FaviconDisplay(minecraftServer.getFaviconImage());
+        display.setBounds(200,200,200,200);
+        display.setVisible(true);
+        display.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+    }
+    static class FaviconDisplay extends JFrame{
+        BufferedImage bufferedImage;
+        @Override
+        public void paint(Graphics graphics){
+            graphics.drawImage(this.bufferedImage,15,40,this);
+        }
+        public FaviconDisplay(BufferedImage img){
+            this.bufferedImage=img;
+        }
     }
 }

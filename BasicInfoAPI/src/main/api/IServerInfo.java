@@ -1,5 +1,7 @@
 package main.api;
 
+import java.awt.image.BufferedImage;
+
 /**
  * Defines interfaces to get the basic info of a Minecraft server.
  * @author Rock Chin
@@ -22,5 +24,6 @@ public interface IServerInfo {
     String getDefaultDescriptionText();
     String getDefaultDescriptionColor();
     ExtraDescr[] getExtraDescription();
-    String getFavicon();
+    String getFaviconBase64();
+    BufferedImage getFaviconImage();
 }
