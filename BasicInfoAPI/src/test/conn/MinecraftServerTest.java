@@ -5,7 +5,7 @@ import main.conn.MinecraftServer;
 
 public class MinecraftServerTest {
     public static void main(String[] args)throws Exception {
-        MinecraftServer minecraftServer=new MinecraftServer("localhost",25565);
+        MinecraftServer minecraftServer=new MinecraftServer("play.ee-fans.com",25565);
         System.out.println("available:"+minecraftServer.isAvailable());
         System.out.println("version:name:"+minecraftServer.getVersionName()+" protocol:"+minecraftServer.getVersionProtocol());
         System.out.println("defaultDescription:color:"+minecraftServer.getDefaultDescriptionColor()+" text:"+minecraftServer.getDefaultDescriptionText());

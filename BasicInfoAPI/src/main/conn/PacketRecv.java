@@ -15,7 +15,9 @@ public class PacketRecv {
         this.dataInputStream=dataInputStream;
         length=readVarInt();
         packet=new byte[length];
-        dataInputStream.read(packet,0,length);
+        for(int i=0;i<length;i++){
+            packet[i]=dataInputStream.readByte();
+        }
         id=popVarInt();
     }
     public byte popByte(){
