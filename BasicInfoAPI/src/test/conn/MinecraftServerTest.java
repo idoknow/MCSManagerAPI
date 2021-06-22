@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 
 public class MinecraftServerTest {
     public static void main(String[] args)throws Exception {
-        MinecraftServer minecraftServer=new MinecraftServer("play.ee-fans.com",25565);
+        MinecraftServer minecraftServer=new MinecraftServer("localhost",25567);
         System.out.println("available:"+minecraftServer.isAvailable());
         System.out.println("version:name:"+minecraftServer.getVersionName()+" protocol:"+minecraftServer.getVersionProtocol());
         System.out.println("defaultDescription:color:"+minecraftServer.getDefaultDescriptionColor()+" text:"+minecraftServer.getDefaultDescriptionText());
@@ -24,10 +24,12 @@ public class MinecraftServerTest {
         }
         System.out.println("favicon:"+minecraftServer.getFaviconBase64());
 
-        FaviconDisplay display=new FaviconDisplay(minecraftServer.getFaviconImage());
-        display.setBounds(200,200,200,200);
-        display.setVisible(true);
-        display.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        if (minecraftServer.getFaviconImage()!=null) {
+            FaviconDisplay display = new FaviconDisplay(minecraftServer.getFaviconImage());
+            display.setBounds(200, 200, 200, 200);
+            display.setVisible(true);
+            display.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        }
 
     }
     static class FaviconDisplay extends JFrame{

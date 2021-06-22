@@ -281,7 +281,8 @@ public class MinecraftServer extends Thread implements IServerInfo {
     @Override
     public BufferedImage getFaviconImage(){
         try{
-            return base64ToBufferedImage(getFaviconBase64().split(",")[1]);
+            if (getFaviconBase64()!=null)
+                return base64ToBufferedImage(getFaviconBase64().split(",")[1]);
         }catch (Exception e){
             e.printStackTrace();
         }
