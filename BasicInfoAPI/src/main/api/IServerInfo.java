@@ -26,4 +26,5 @@ public interface IServerInfo {
     ExtraDescr[] getExtraDescription();
     String getFaviconBase64();
     BufferedImage getFaviconImage();
+    String getRawJSONString();
 }

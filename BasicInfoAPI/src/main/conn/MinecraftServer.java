@@ -26,26 +26,54 @@ public class MinecraftServer extends Thread implements IServerInfo {
     private int port=25565;
     private Response response=null;
     private boolean available=false;
-    public MinecraftServer(String host,int port)throws Exception {
+    private String jsonStr;
+    private boolean debug=false;
+
+    public MinecraftServer(String host,int port,boolean debugMode)throws Exception{
+        debug=debugMode;
+        init(host,port);
+    }
+    public MinecraftServer(String host,int port)throws Exception{
+        debug=false;
+        init(host, port);
+    }
+
+
+    private void debugMsg(String str){
+        if (debug){
+            System.out.println("[APIDebug]"+str);
+        }
+    }
+
+
+
+    public void init(String host,int port)throws Exception {
+        debugMsg("MakingSocket...");
         socket=new Socket(host,port);
         this.host=host;
         this.port=port;
         dataInputStream=new DataInputStream(socket.getInputStream());
         dataOutputStream=new DataOutputStream(socket.getOutputStream());
-
+        debugMsg("SocketMadeSuccessfully.");
         new PacketSend(0).addVarInt(-1)
                 .addString(host)
                 .addShort(port)
                 .addVarInt(1).write(dataOutputStream);
         new PacketSend(0).write(dataOutputStream);
+        debugMsg("WroteRequestPacket.");
         try {
-            response = new Gson().fromJson(new PacketRecv(dataInputStream).popString(), Response.class);
+            jsonStr=new PacketRecv(dataInputStream).popString();
+            debugMsg("ReadJSONData:"+jsonStr);
+            response = new Gson().fromJson(jsonStr, Response.class);
             if (response==null){
                 available=false;
+                debugMsg("ResponseIsNull.");
                 throw new EOFException("Invalid server response.");
             }
+            debugMsg("done.");
             available=true;
         }catch (EOFException e){//To change protocol.
+            debugMsg("LegacyServer,protocolChanged.");
             socket=new Socket(host,port);
             dataInputStream=new DataInputStream(socket.getInputStream());
             dataOutputStream=new DataOutputStream(socket.getOutputStream());
@@ -57,6 +85,7 @@ public class MinecraftServer extends Thread implements IServerInfo {
             if (dataInputStream.readByte()==-1){
                 dataInputStream.readByte();
                 dataInputStream.readByte();
+                debugMsg("ReadingResponseFromALegacyServer.");
                 byte[] b=new byte[512];
                 dataInputStream.read(b);
                 ByteBase bbase= new ByteBase(b);
@@ -74,11 +103,12 @@ public class MinecraftServer extends Thread implements IServerInfo {
                             (new String(bbase.pop(end),StandardCharsets.UTF_16BE));
                     response.players.max=Integer.parseInt
                             (new String(bbase.pop(end),StandardCharsets.UTF_16BE));
+                    debugMsg("done.");
                     available=true;
                 }
             }
             if (!available){//version lower then 1.4
-
+                debugMsg("LowerServer,protocolChanged.");
                 socket=new Socket(host,port);
                 dataInputStream=new DataInputStream(socket.getInputStream());
                 dataOutputStream=new DataOutputStream(socket.getOutputStream());
@@ -89,6 +119,7 @@ public class MinecraftServer extends Thread implements IServerInfo {
                 if (dataInputStream.readByte()==-1){
                     dataInputStream.readByte();
                     dataInputStream.readByte();
+                    debugMsg("ReadingResponseFromAVeryLowServer");
                     byte[] b=new byte[512];
                     dataInputStream.read(b);
                     ByteBase bbase= new ByteBase(b);
@@ -106,6 +137,7 @@ public class MinecraftServer extends Thread implements IServerInfo {
                     response.players=new Response.players();
                     response.players.online=Integer.parseInt(new String(bbase.pop(end),StandardCharsets.UTF_16BE));
                     response.players.max=Integer.parseInt(new String(bbase.pop(zeroEnd),StandardCharsets.UTF_16BE));
+                    debugMsg("done.");
                     available=true;
                 }
             }
@@ -287,6 +319,10 @@ public class MinecraftServer extends Thread implements IServerInfo {
             e.printStackTrace();
         }
         return null;
+    }
+    @Override
+    public String getRawJSONString(){
+        return jsonStr;
     }
     private  static BufferedImage base64ToBufferedImage(String base64)throws IOException {
         BASE64Decoder decoder = new sun.misc.BASE64Decoder();
