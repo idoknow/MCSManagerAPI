@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 
 public class MinecraftServerTest {
     public static void main(String[] args)throws Exception {
-        MinecraftServer minecraftServer=new MinecraftServer("cecelia.cn",25565,true);
+        MinecraftServer minecraftServer=new MinecraftServer("s.maxkim.vip",25565,true);
         System.out.println("available:"+minecraftServer.isAvailable());
         System.out.println("version:name:"+minecraftServer.getVersionName()+" protocol:"+minecraftServer.getVersionProtocol());
         System.out.println("defaultDescription:color:"+minecraftServer.getDefaultDescriptionColor()+" text:"+minecraftServer.getDefaultDescriptionText());

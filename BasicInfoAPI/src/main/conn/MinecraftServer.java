@@ -11,6 +11,7 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * A MinecraftServer instance provides methods to create connection to server and communicate with peer.
@@ -31,11 +32,15 @@ public class MinecraftServer extends Thread implements IServerInfo {
 
     public MinecraftServer(String host,int port,boolean debugMode)throws Exception{
         debug=debugMode;
+        long start=new Date().getTime();
         init(host,port);
+        debugMsg("Spent:"+(new Date().getTime()-start)+"ms");
     }
     public MinecraftServer(String host,int port)throws Exception{
         debug=false;
-        init(host, port);
+        long start=new Date().getTime();
+        init(host,port);
+        debugMsg("Spent:"+(new Date().getTime()-start)+"ms");
     }
 
 
@@ -55,7 +60,7 @@ public class MinecraftServer extends Thread implements IServerInfo {
         dataInputStream=new DataInputStream(socket.getInputStream());
         dataOutputStream=new DataOutputStream(socket.getOutputStream());
         debugMsg("SocketMadeSuccessfully.");
-        new PacketSend(0).addVarInt(-1)
+        new PacketSend(0).addVarInt(755)
                 .addString(host)
                 .addShort(port)
                 .addVarInt(1).write(dataOutputStream);
@@ -64,7 +69,7 @@ public class MinecraftServer extends Thread implements IServerInfo {
         try {
             jsonStr=new PacketRecv(dataInputStream).popString();
             debugMsg("ReadJSONData:"+jsonStr);
-            response = new Gson().fromJson(jsonStr, Response.class);
+            response = new Gson().fromJson(jsonStr.endsWith("}")?jsonStr:jsonStr+"}", Response.class);
             if (response==null){
                 available=false;
                 debugMsg("ResponseIsNull.");
@@ -213,6 +218,16 @@ public class MinecraftServer extends Thread implements IServerInfo {
         }
         version version;
         String favicon;
+        static class modinfo{
+            String type;
+            static class mod{
+                String modid;
+                String version;
+            }
+            mod[] modList;
+        }
+        modinfo modinfo;
+
     }
 
     @Override
