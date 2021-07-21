@@ -31,6 +31,7 @@ public class PacketSend {
         dataOutputStream.write(temp);
         dataOutputStream.flush();
     }
+
     private void writeVarInt(int value,DataOutputStream dataOutputStream)throws IOException{
         do {
             byte temp = (byte)(value & 0b01111111);

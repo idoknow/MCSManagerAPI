@@ -13,6 +13,8 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * A MinecraftServer instance provides methods to create connection to server and communicate with peer.
@@ -31,22 +33,27 @@ public class MinecraftServer extends Thread implements IServerInfo {
     private String jsonStr;
     private boolean debug=false;
 
+
+    private final StringBuffer timeLock=new StringBuffer();
+
+    public final Timer timer=new Timer();
+
     public MinecraftServer(String host,int port,boolean debugMode,int timeout)throws Exception{
         debug=debugMode;
         long start=new Date().getTime();
-        init(host,port,timeout);
+        initTimeControl(host,port,timeout);
         debugMsg("Spent:"+(new Date().getTime()-start)+"ms");
     }
     public MinecraftServer(String host,int port,boolean debugMode)throws Exception{
         debug=debugMode;
         long start=new Date().getTime();
-        init(host,port,10000);
+        initTimeControl(host,port,10000);
         debugMsg("Spent:"+(new Date().getTime()-start)+"ms");
     }
     public MinecraftServer(String host,int port)throws Exception{
         debug=false;
         long start=new Date().getTime();
-        init(host,port,10000);
+        initTimeControl(host,port,10000);
         debugMsg("Spent:"+(new Date().getTime()-start)+"ms");
     }
 
@@ -57,9 +64,32 @@ public class MinecraftServer extends Thread implements IServerInfo {
         }
     }
 
+    private void initTimeControl(String host,int port,int timeout)throws Exception{
+        new Thread(()->{
+            try {
+                Thread.sleep(timeout);
+                synchronized (timeLock) {
+                    timeLock.notify();
+                }
+            }catch (Exception ignored){}
+        }).start();
+        new Thread(()->{
+            try{
+                init(host, port, timeout);
+                synchronized (timeLock){
+                    timeLock.notify();
+                }
+            }catch (Exception ignored){}
+        }).start();
+        synchronized (timeLock){
+            timeLock.wait();
+        }
+        try{
+            socket.close();
+        }catch (Exception ignored){}
+    }
 
-
-    public void init(String host,int port,int timeout)throws Exception {
+    private void init(String host,int port,int timeout)throws Exception {
         debugMsg("MakingSocket...");
         socket=new Socket();
         socket.connect(new InetSocketAddress(host,port),timeout);
