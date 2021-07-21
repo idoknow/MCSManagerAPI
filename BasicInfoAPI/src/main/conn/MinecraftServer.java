@@ -8,6 +8,7 @@ import sun.misc.BASE64Decoder;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -30,16 +31,22 @@ public class MinecraftServer extends Thread implements IServerInfo {
     private String jsonStr;
     private boolean debug=false;
 
+    public MinecraftServer(String host,int port,boolean debugMode,int timeout)throws Exception{
+        debug=debugMode;
+        long start=new Date().getTime();
+        init(host,port,timeout);
+        debugMsg("Spent:"+(new Date().getTime()-start)+"ms");
+    }
     public MinecraftServer(String host,int port,boolean debugMode)throws Exception{
         debug=debugMode;
         long start=new Date().getTime();
-        init(host,port);
+        init(host,port,10000);
         debugMsg("Spent:"+(new Date().getTime()-start)+"ms");
     }
     public MinecraftServer(String host,int port)throws Exception{
         debug=false;
         long start=new Date().getTime();
-        init(host,port);
+        init(host,port,10000);
         debugMsg("Spent:"+(new Date().getTime()-start)+"ms");
     }
 
@@ -52,9 +59,10 @@ public class MinecraftServer extends Thread implements IServerInfo {
 
 
 
-    public void init(String host,int port)throws Exception {
+    public void init(String host,int port,int timeout)throws Exception {
         debugMsg("MakingSocket...");
-        socket=new Socket(host,port);
+        socket=new Socket();
+        socket.connect(new InetSocketAddress(host,port),timeout);
         this.host=host;
         this.port=port;
         dataInputStream=new DataInputStream(socket.getInputStream());
@@ -79,7 +87,8 @@ public class MinecraftServer extends Thread implements IServerInfo {
             available=true;
         }catch (EOFException e){//To change protocol.
             debugMsg("LegacyServer,protocolChanged.");
-            socket=new Socket(host,port);
+            socket=new Socket();
+            socket.connect(new InetSocketAddress(host,port),timeout);
             dataInputStream=new DataInputStream(socket.getInputStream());
             dataOutputStream=new DataOutputStream(socket.getOutputStream());
 
@@ -114,7 +123,8 @@ public class MinecraftServer extends Thread implements IServerInfo {
             }
             if (!available){//version lower then 1.4
                 debugMsg("LowerServer,protocolChanged.");
-                socket=new Socket(host,port);
+                socket=new Socket();
+                socket.connect(new InetSocketAddress(host,port),timeout);
                 dataInputStream=new DataInputStream(socket.getInputStream());
                 dataOutputStream=new DataOutputStream(socket.getOutputStream());
 
